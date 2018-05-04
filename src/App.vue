@@ -2,7 +2,7 @@
   <div id="app">
     <el-container>
       <el-header>
-        <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+        <el-menu :default-active="activeIndex" class="menubar" mode="horizontal" @select="handleSelect">
           <el-menu-item index="bubbleSort">
             <router-link to="/bubbleSort">冒泡排序</router-link>
           </el-menu-item>
@@ -71,12 +71,16 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
-.el-menu-item {
-  padding: 0;
-  a {
-    display: block;
-    padding: 0 20px;
-    text-decoration: none;
+.menubar {
+  display: flex;
+  justify-content: center;
+  .el-menu-item {
+    padding: 0;
+    a {
+      display: block;
+      padding: 0 20px;
+      text-decoration: none;
+    }
   }
 }
 </style>
