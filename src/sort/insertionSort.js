@@ -13,6 +13,5 @@ export default async function (arr, context, velocity = 0) {
       }
     }
     context.$set(arr, j, target)
-    await sleep(velocity)
   }
 }

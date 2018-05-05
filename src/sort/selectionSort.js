@@ -12,6 +12,5 @@ export default async function (arr, context, velocity = 0) {
     let temp = arr[i]
     context.$set(arr, i, arr[minIndex])
     context.$set(arr, minIndex, temp)
-    await sleep(velocity)
   }
 }

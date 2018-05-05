@@ -11,7 +11,7 @@
     </div>
     <el-radio-group class="mt10" v-model="velocity">
       <el-radio :label="1" :disabled="isStart">1倍速</el-radio>
-      <el-radio :label="10" :disabled="isStart">0.01倍速</el-radio>
+      <el-radio :label="50" :disabled="isStart">0.05倍速</el-radio>
       <el-radio :label="500" :disabled="isStart">0.005倍速</el-radio>
       <el-radio :label="1000" :disabled="isStart">0.0001倍速</el-radio>
     </el-radio-group>
