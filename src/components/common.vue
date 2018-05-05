@@ -36,7 +36,7 @@ export default {
     return {
       arr: [],
       spend: 0,
-      timer: +new Date(),
+      timer: 0,
       isStart: false,
       velocity: 1,
       interval: null
@@ -75,17 +75,21 @@ export default {
   watch: {
     isStart (nv) {
       if (nv) {
-        this.timer = +new Date()
         this.interval = setInterval(() => {
-          this.timer = +new Date()
-        })
+          let temp = +new Date()
+          this.timer = temp
+        }, 10)
+
         this.spend = 0
+        this.timer = +new Date()
       } else {
         clearInterval(this.interval)
+        this.interval = null
+        this.timer = 0
       }
     },
     timer (nv, ov) {
-      if (this.isStart) {
+      if (this.isStart && ov !== 0) {
         this.spend += (nv - ov) / 1000
       }
     }
