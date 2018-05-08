@@ -1,23 +1,23 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import nav from '@/utils/nav'
+import nav from '@/utils/sort'
 Vue.use(VueRouter)
 
 function authToRoutes (nav) {
   return [{
     path: '',
-    redirect: `/${Object.keys(nav[0])[0]}`
+    redirect: `/${nav[0]}`
   }].concat(
     nav.map((prop) => {
-      let key = Object.keys(prop)[0]
       return {
-        name: key,
-        index: key,
-        path: `/${key}`,
+        name: prop,
+        index: prop,
+        path: `/${prop}`,
         meta: {
           keepAlive: true
         },
-        component: resolve => require([`@/components/${key}`], resolve)
+        component: resolve =>
+          require([`@/components/${prop}`], resolve)
       }
     })
   )
