@@ -3,20 +3,8 @@
     <el-container>
       <el-header>
         <el-menu :default-active="activeIndex" class="menubar" mode="horizontal" @select="handleSelect">
-          <el-menu-item index="bubbleSort">
-            <router-link to="/bubbleSort">冒泡排序</router-link>
-          </el-menu-item>
-          <el-menu-item index="selectionSort">
-            <router-link to="/selectionSort">选择排序</router-link>
-          </el-menu-item>
-          <el-menu-item index="insertionSort">
-            <router-link to="/insertionSort">插入排序</router-link>
-          </el-menu-item>
-          <el-menu-item index="shellSort">
-            <router-link to="/shellSort">希尔排序</router-link>
-          </el-menu-item>
-          <el-menu-item index="quickSort">
-            <router-link to="/quickSort">快速排序</router-link>
+          <el-menu-item v-for="n in nav" :index="Object.keys(n)[0]" :key="Object.keys(n)[0]">
+            <router-link :to="'/' + Object.keys(n)[0]">{{Object.values(n)[0]}}</router-link>
           </el-menu-item>
         </el-menu>
       </el-header>
@@ -37,8 +25,17 @@ import insertionSort from './components/insertionSort'
 import shellSort from './components/shellSort'
 import quickSort from './components/quickSort'
 
+import Nav from '@/utils/nav'
+
+// const Sort
+
 export default {
   name: 'App',
+  data () {
+    return {
+      nav: Nav
+    }
+  },
   components: {
     bubbleSort,
     selectionSort,
