@@ -81,6 +81,7 @@ export default {
 </script>
 <style lang='scss' scoped>
 #drawer {
+    box-shadow: 0px -1px 15px rgba(0,0,0,.5);
     width: 100%;
     position: fixed;
     bottom: 0;

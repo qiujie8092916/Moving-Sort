@@ -16,12 +16,22 @@
       <el-radio :label="1000" :disabled="isStart">0.0001倍速</el-radio>
     </el-radio-group>
     <el-button class="mt10" @click="handleStart" :disabled="isStart">开始排序</el-button>
-    <el-button class="mt10 mln" @click="handleReset" :disabled="isStart">重置</el-button>
+    <el-button class="mt10 mln" @click="showDrawer=true" :disabled="isStart">重置</el-button>
+    <test-drawer
+      class="ptb10"
+      :is-show="showDrawer">
+      <div slot="content">
+        <span>确定要重置所有数据吗？</span>
+        <el-button type="mini" @click="handleReset">确定</el-button>
+        <el-button type="mini" @click="showDrawer=false">取消</el-button>
+      </div>
+    </test-drawer>
   </div>
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState } from 'vuex'
+import testDrawer from '@/components/drawer'
 const sort = {
   bubbleSort: require('@/sort/bubbleSort'),
   selectionSort: require('@/sort/selectionSort'),
@@ -32,29 +42,38 @@ const sort = {
 
 export default {
   name: 'common',
+  components: {
+    testDrawer
+  },
   data () {
     return {
-      arr: [],
+      // arr: [],
       spend: 0,
       timer: 0,
       isStart: false,
       velocity: 1,
-      interval: null
+      interval: null,
+      showDrawer: false
     }
   },
   computed: {
     ...mapState([
       'range',
-      'sortingSequence'
-    ])
+      'sortingSequence',
+      'start'
+    ]),
+    arr () {
+      return this.sortingSequence.map(val => {
+        return val
+      })
+    }
   },
   created () {
-    this.generator()
+    if (!this.sortingSequence.length) {
+      this.generator()
+    }
   },
   methods: {
-    ...mapMutations([
-      'generatorSortingSequence'
-    ]),
     async handleStart () {
       this.isStart = true
       let exec = sort[this.$route.path.slice(1)].default
@@ -62,14 +81,17 @@ export default {
       this.isStart = false
     },
     handleReset () {
+      if (this.start) {
+        this.$notify.error({
+          message: '需等到所有排序完成才能重置'
+        })
+        return
+      }
       this.generator()
+      this.showDrawer = false
     },
     generator () {
-      this.generatorSortingSequence()
-      this.arr = []
-      this.sortingSequence.forEach(val => {
-        this.arr.push(val)
-      })
+      this.$store.commit('GENERATOR_SORTING_SEQUENCE')
     }
   },
   watch: {
@@ -87,6 +109,7 @@ export default {
         this.interval = null
         this.timer = 0
       }
+      this.$store.commit('SET_START', nv)
     },
     timer (nv, ov) {
       if (this.isStart && ov !== 0) {
@@ -114,6 +137,10 @@ export default {
 }
 .fs13 {
   font-size: 13px;
+}
+.ptb10 {
+  padding-top: 10px;
+  padding-bottom: 10px;
 }
 .container {
   display: flex;
