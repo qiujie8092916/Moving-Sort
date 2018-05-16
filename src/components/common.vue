@@ -31,14 +31,8 @@
 
 <script>
 import { mapState } from 'vuex'
+import Nav from '@/utils/nav'
 import testDrawer from '@/components/drawer'
-const sort = {
-  bubbleSort: require('@/sort/bubbleSort'),
-  selectionSort: require('@/sort/selectionSort'),
-  insertionSort: require('@/sort/insertionSort'),
-  shellSort: require('@/sort/shellSort'),
-  quickSort: require('@/sort/quickSort')
-}
 
 export default {
   name: 'common',
@@ -66,6 +60,14 @@ export default {
       return this.sortingSequence.map(val => {
         return val
       })
+    },
+    sortWay () {
+      let obj = {}
+      Nav.forEach(nav => {
+        let prop = Object.keys(nav)[0]
+        obj[prop] = require(`@/sort/${prop}`)
+      })
+      return obj
     }
   },
   created () {
@@ -76,7 +78,7 @@ export default {
   methods: {
     async handleStart () {
       this.isStart = true
-      let exec = sort[this.$route.path.slice(1)].default
+      let exec = this.sortWay[this.$route.path.slice(1)].default
       await exec(this.arr, this, this.velocity)
       this.isStart = false
     },

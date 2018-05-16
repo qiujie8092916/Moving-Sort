@@ -1,5 +1,6 @@
 import sleep from '@/utils/sleep'
 const { floor } = Math
+
 export default async function (arr, context, velocity = 0) {
   async function divide (arr, left, right) {
     if (left < right) {
@@ -16,6 +17,7 @@ export default async function (arr, context, velocity = 0) {
     let index = start
     let _index = start
     while (left <= mid && right <= end) {
+      await sleep(velocity)
       if (arr[left] <= arr[right]) {
         temp[index++] = arr[left++]
       } else {
@@ -23,14 +25,16 @@ export default async function (arr, context, velocity = 0) {
       }
     }
     while (left <= mid) {
+      await sleep(velocity)
       temp[index++] = arr[left++]
     }
     while (right <= end) {
+      await sleep(velocity)
       temp[index++] = arr[right++]
     }
     while (_index <= end) {
-      context.$set(arr, _index, temp[_index++])
       await sleep(velocity)
+      context.$set(arr, _index, temp[_index++])
     }
   }
   await divide.call(context, context.arr, 0, context.arr.length - 1)

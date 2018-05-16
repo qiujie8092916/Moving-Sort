@@ -1,45 +1,31 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import Stack from '@/utils/stack'
 Vue.use(Vuex)
 
 const { floor, random } = Math
-
-class Stack {
-  constructor (arr) {
-    this.stack = arr || []
-  }
-  push (ele) {
-    return this.stack.push(ele)
-  }
-  pop () {
-    return this.stack.pop()
-  }
-  size () {
-    return this.stack.length
-  }
-  clear () {
-    this.stack = []
-  }
-  isEmpty () {
-    return !this.stack.length
-  }
-  peek () {
-    return this.stack[this.stack.size() - 1]
-  }
-}
 
 export default new Vuex.Store({
   state: {
     range: 100,
     sortingSequence: [],
     stack: new Stack(),
-    start: false
+    start: false,
+    isUnique: true
   },
   mutations: {
     GENERATOR_SORTING_SEQUENCE (state) {
       state.sortingSequence = []
       for (let i = 0; i < state.range; i++) {
-        state.sortingSequence.push(floor(random() * state.range))
+        let rand = floor(random() * state.range)
+        if (!state.isUnique) {
+          state.sortingSequence.push(rand)
+        } else {
+          while (isExist(state.sortingSequence, rand)) {
+            rand = floor(random() * state.range)
+          }
+          state.sortingSequence.push(rand)
+        }
       }
     },
     SET_START (state, start) {
@@ -55,3 +41,7 @@ export default new Vuex.Store({
     }
   }
 })
+
+function isExist (arr, ele) {
+  return arr.indexOf(ele) > -1
+}

@@ -1,26 +1,53 @@
 import sleep from '@/utils/sleep'
-const { floor, random } = Math
-export default async function (arr, context, velocity = 0) {
-  async function qs (_arr) {  // eslint-disable-line
-    if (_arr.length <= 1) return _arr
+// const { floor, random } = Math
+
+const filter = async function (base, origin, dest, type) {
+  origin.forEach(item => {
+    if (type === 'lt') {
+      if (item < base) {
+        dest.push(item)
+      }
+    } else if (type === 'le') {
+      if (item <= base) {
+        dest.push(item)
+      }
+    } else if (type === 'eq') {
+      if (item === base) {
+        dest.push(item)
+      }
+    } else if (type === 'gt') {
+      if (item > base) {
+        dest.push(item)
+      }
+    } else if (type === 'ge') {
+      if (item >= base) {
+        dest.push(item)
+      }
+    }
+  })
+}
+
+export default async function (origin, context, velocity = 0) {
+  async function qs (arr, origin, startIndex) {
+    if (arr.length <= 1) return arr
     let left = []
     let right = []
-    let mid = []
-    let base = floor(random() * _arr.length)
-    for (let i = 0; i < _arr.length; i++) {
+    filter(arr[0], arr.slice(1), left, 'le')
+    for (let i = 0; i < left.length; i++) {
       await sleep(velocity)
-      if (_arr[i] > _arr[base]) {
-        right.push(_arr[i])
-      } else if (_arr[i] < _arr[base]) {
-        left.push(_arr[i])
-      } else {
-        mid.push(_arr[i])
-      }
-      await sleep(velocity)
+      context.$set(origin, startIndex + i, left[i])
     }
-    console.log('1')
-    // qs.call(context, left).concat(qs.call(context, mid), qs.call(context, right))
-    return qs.call(context, left).concat(qs.call(context, mid), qs.call(context, right))
+    await sleep(velocity)
+    context.$set(origin, left.length + startIndex, arr[0])
+    filter(arr[0], arr.slice(1), right, 'gt')
+    for (let i = 0; i < right.length; i++) {
+      await sleep(velocity)
+      context.$set(origin, startIndex + left.length + i + 1, right[i])
+    }
+    await qs.call(context, left, origin, startIndex)
+    await qs.call(context, right, origin, left.length + startIndex + 1)
+    return left.concat(arr[0], right)
   }
-  context.arr = await qs.call(context, arr)
+  let arr = JSON.parse(JSON.stringify(origin))
+  await qs.call(context, arr, origin, 0)
 }
